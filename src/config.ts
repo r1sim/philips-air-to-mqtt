@@ -10,6 +10,9 @@ export default {
   },
   airPurifier: {
     deviceName: process.env.PHILIPS_AIR_DEVICE_NAME as string,
+    refreshInterval: process.env.PHILIPS_AIR_REFRESH_INTERVAL
+      ? parseInt(process.env.PHILIPS_AIR_REFRESH_INTERVAL)
+      : 120,
     connection: {
       host: process.env.PHILIPS_AIR_HOST as string,
       protocol: (process.env.PHILIPS_AIR_PROTOCOL as string) ?? 'http',

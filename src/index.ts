@@ -32,8 +32,11 @@ console.info('Connected to air purifier', firmware);
 const mqttHandler = getMqttHandler(firmware, {
   onRequestUpdate: () => updateDeviceStatus(),
 });
-// Refresh status every 2 minutes
-setInterval(async () => updateDeviceStatus(), 120 * 1000);
+
+setInterval(
+  async () => updateDeviceStatus(),
+  config.airPurifier.refreshInterval * 1000
+);
 
 process.on('SIGINT', () => {
   console.log('SIGINT received, shutting down...');

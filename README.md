@@ -25,15 +25,16 @@ Ensure you have access to an MQTT broker. If you don't have one set up, you can 
 
 The project uses environment variables for configuration. Set the following environment variables before running the project:
 
-| Variable                      | Description                   | Default\* |
-| ----------------------------- | ----------------------------- | --------- |
-| **`PHILIPS_AIR_HOST`**        | Air Purifier IP/Host          |           |
-| **`PHILIPS_AIR_DEVICE_NAME`** | Air Purifier IP/Host          |           |
-| **`PHILIPS_AIR_PROTOCOL`**    | `http` or `coap`              | `http`    |
-| **`MQTT_HOST`**               | MQTT Broker IP/Host           |           |
-| **`MQTT_USERNAME`**           | MQTT Broker Username          |           |
-| **`MQTT_PASSWORD`**           | MQTT Broker Password          |           |
-| **`MQTT_PORT`**               | IP or Host of you MQTT Broker | `1883`    |
+| Variable                           | Description                        | Default\* |
+| ---------------------------------- | ---------------------------------- | --------- |
+| **`PHILIPS_AIR_HOST`**             | Air Purifier IP/Host               |           |
+| **`PHILIPS_AIR_DEVICE_NAME`**      | Air Purifier IP/Host               |           |
+| **`PHILIPS_AIR_PROTOCOL`**         | `http` or `coap`                   | `http`    |
+| **`PHILIPS_AIR_REFRESH_INTERVAL`** | Status refresh interval in seconds | `120`     |
+| **`MQTT_HOST`**                    | MQTT Broker IP/Host                |           |
+| **`MQTT_USERNAME`**                | MQTT Broker Username               |           |
+| **`MQTT_PASSWORD`**                | MQTT Broker Password               |           |
+| **`MQTT_PORT`**                    | IP or Host of you MQTT Broker      | `1883`    |
 
 _\*Variables without a default value are required_
 
@@ -56,6 +57,7 @@ services:
       - PHILIPS_AIR_HOST=
       - PHILIPS_AIR_DEVICE_NAME=
       - PHILIPS_AIR_PROTOCOL=http
+      - PHILIPS_AIR_REFRESH_INTERVAL=120
     restart: unless-stopped
     init: true
 ```
