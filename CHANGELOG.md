@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.0.0...v1.0.1) (2023-06-02)
+
+
+### Bug Fixes
+
+* **config:** add `PHILIPS_AIR_REFRESH_INTERVAL` setting ([768702a](https://github.com/r1sim/philips-air-to-mqtt/commit/768702a90124b3b8231c455376da5b0e2b15d993))
+
 # 1.0.0 (2023-06-02)
 
 
