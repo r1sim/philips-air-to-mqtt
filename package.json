@@ -1,0 +1,55 @@
+{
+  "name": "philips-air-to-mqtt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.mjs",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:r1sim/philips-air-to-mqtt.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc",
+    "buildContainer": "docker build -t philips-air-to-mqtt:latest .",
+    "dev": "tsc --watch",
+    "start": "npm run build && node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "semantic-release": "semantic-release"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^8.1.0",
+    "@semantic-release/release-notes-generator": "^11.0.2",
+    "@types/node": "^20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "rimraf": "^5.0.1",
+    "semantic-release": "^21.0.2",
+    "typescript": "5.0.4"
+  },
+  "dependencies": {
+    "mqtt": "^4.3.7",
+    "philips-air": "^0.6.0"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ]
+  }
+}

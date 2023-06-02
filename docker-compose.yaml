@@ -1,0 +1,8 @@
+version: '3.3'
+services:
+  philips-air-to-mqtt:
+    build: .
+    image: ghcr.io/r1sim/philips-air-to-mqtt
+    env_file: .env.dev
+    restart: unless-stopped
+    init: true
