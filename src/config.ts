@@ -15,7 +15,9 @@ export default {
       : 120,
     connection: {
       host: process.env.PHILIPS_AIR_HOST as string,
-      protocol: (process.env.PHILIPS_AIR_PROTOCOL as string) ?? 'http',
+      protocol: ((process.env.PHILIPS_AIR_PROTOCOL as string) ?? 'http') as
+        | 'http'
+        | 'coap',
     },
   },
 };
