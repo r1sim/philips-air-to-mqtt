@@ -90,7 +90,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     device: getAutoDiscoveryDevice(),
   };
 
-  const conficPayloadAllergyIndexSensor = {
+  const configPayloadAllergyIndexSensor = {
     state_topic: topics.allergyIndexSensor.stateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:flower-pollen-outline',
@@ -126,7 +126,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     publish(configTopicModeControl, configPayloadModeControl);
     publish(configTopicLedControl, configPayloadLedControl);
     publish(configTopicPm25Sensor, configPayloadPm25Sensor);
-    publish(configTopicAllergyIndexSensor, conficPayloadAllergyIndexSensor);
+    publish(configTopicAllergyIndexSensor, configPayloadAllergyIndexSensor);
     publish(configTopicChildLockControl, configPayloadChildLock);
     publish(deviceAvailabilityTopic, 'lost');
   };
