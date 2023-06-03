@@ -31,7 +31,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   const configPayloadLedControl = {
     state_topic: topics.ledControl.stateTopic,
     brightness_state_topic: topics.ledControl.stateTopicBrightness,
-    value_template: '{{ value }}',
+    state_value_template: '{{ value }}',
     command_topic: topics.ledControl.commandTopic,
     brightness_command_topic: topics.ledControl.commandTopicBrightness,
     icon: 'mdi:light-recessed',
@@ -53,7 +53,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
 
   const configPayloadModeControl = {
     state_topic: topics.modeControl.stateTopic,
-    value_template: '{{ value }}',
+    state_value_template: '{{ value }}',
     command_topic: topics.modeControl.commandTopic,
     options: [
       'auto',
@@ -78,7 +78,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
 
   const configPayloadPm25Sensor = {
     state_topic: topics.pm25Sensor.stateTopic,
-    value_template: '{{ value }}',
+    state_value_template: '{{ value }}',
     icon: 'mdi:air-filter',
     name: 'PM2.5',
     object_id: `${device.name}_pm25`,
@@ -92,7 +92,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
 
   const conficPayloadAllergyIndexSensor = {
     state_topic: topics.allergyIndexSensor.stateTopic,
-    value_template: '{{ value }}',
+    state_value_template: '{{ value }}',
     icon: 'mdi:flower-pollen-outline',
     name: 'Allergy Index',
     object_id: `${device.name}_allergenIndex`,
@@ -106,6 +106,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   const configPayloadChildLock = {
     state_topic: topics.childLockControl.stateTopic,
     command_topic: topics.childLockControl.commandTopic,
+    state_value_template: '{{ value }}',
     icon: 'mdi:lock',
     name: 'Child Lock',
     object_id: `${device.name}_childLock`,
