@@ -118,8 +118,13 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const publish = (topic: string, message: unknown) => {
-    const mqttMessage = message !== undefined ? JSON.stringify(message) : '';
+    if (message !== undefined) {
+      const isString = typeof message === 'string';
+      const mqttMessage = isString ? message : JSON.stringify(message);
     mqtt.publish(topic, mqttMessage, { retain: true });
+    } else {
+      mqtt.publish(topic, '', { retain: true });
+    }
   };
 
   const publishAutoDiscovery = () => {
