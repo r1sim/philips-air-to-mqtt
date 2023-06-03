@@ -6,6 +6,18 @@ export default {
       username: process.env.MQTT_USERNAME as string,
       password: process.env.MQTT_PASSWORD as string,
     },
+    homeAssistantAutoDiscovery: {
+      enabled:
+        process.env.MQTT_HA_AD_ENABLED &&
+        process.env.MQTT_HA_AD_ENABLED === 'false'
+          ? false
+          : true,
+      deleteOnShutdown:
+        process.env.MQTT_HA_AD_DELETE_ON_SHUTDOWN &&
+        process.env.MQTT_HA_AD_DELETE_ON_SHUTDOWN === 'true'
+          ? true
+          : false,
+    },
     topicPrefix: (process.env.MQTT_TOPIC_PREFIX as string) ?? 'philips-air',
   },
   airPurifier: {

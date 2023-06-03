@@ -26,7 +26,7 @@ async function updateFirmwareStatus(airClient: AirClient) {
     .getFirmware()
     .catch(error => {
       console.error('Error while checking firmware status', error);
-      mqttHandler?.publishConnectionLost();
+      mqttHandler?.publishError();
     })
     .then(firmware => {
       console.debug('Firmware', JSON.stringify(firmware));
@@ -40,7 +40,7 @@ async function updateFilterStatus(airClient: AirClient) {
     .getFilters()
     .catch(error => {
       console.error('Error while checking filter status', error);
-      mqttHandler?.publishConnectionLost();
+      mqttHandler?.publishError();
     })
     .then(filters => {
       console.debug('Filters', JSON.stringify(filters));
@@ -54,7 +54,7 @@ async function updateDeviceStatus(airClient: AirClient) {
     .getStatus()
     .catch(error => {
       console.error('Error while updating device status', error);
-      mqttHandler?.publishConnectionLost();
+      mqttHandler?.publishError();
     })
     .then(status => {
       console.debug('Filters', JSON.stringify(status));

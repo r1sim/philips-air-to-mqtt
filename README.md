@@ -8,7 +8,7 @@ I built this to integrate my air purifier into home assistant without using HACS
 
 - Mode Control
 - Light Control
-- Child Lock Control
+- Filter Status
 - PM2.5
 - Allergen Index
 - Home Assistant Auto Discovery
@@ -25,16 +25,18 @@ Ensure you have access to an MQTT broker. If you don't have one set up, you can 
 
 The project uses environment variables for configuration. Set the following environment variables before running the project:
 
-| Variable                           | Description                        | Default\* |
-| ---------------------------------- | ---------------------------------- | --------- |
-| **`PHILIPS_AIR_HOST`**             | Air Purifier IP/Host               |           |
-| **`PHILIPS_AIR_DEVICE_NAME`**      | Air Purifier IP/Host               |           |
-| **`PHILIPS_AIR_PROTOCOL`**         | `http` or `coap`                   | `http`    |
-| **`PHILIPS_AIR_REFRESH_INTERVAL`** | Status refresh interval in seconds | `120`     |
-| **`MQTT_HOST`**                    | MQTT Broker IP/Host                |           |
-| **`MQTT_USERNAME`**                | MQTT Broker Username               |           |
-| **`MQTT_PASSWORD`**                | MQTT Broker Password               |           |
-| **`MQTT_PORT`**                    | IP or Host of you MQTT Broker      | `1883`    |
+| Variable                            | Description                                            | Default\* |
+| ----------------------------------- | ------------------------------------------------------ | --------- |
+| **`PHILIPS_AIR_HOST`**              | Air Purifier IP/Host                                   |           |
+| **`PHILIPS_AIR_DEVICE_NAME`**       | Air Purifier IP/Host                                   |           |
+| **`PHILIPS_AIR_PROTOCOL`**          | `http` or `coap`                                       | `http`    |
+| **`PHILIPS_AIR_REFRESH_INTERVAL`**  | Status Refresh Interval in Seconds                     | `120`     |
+| **`MQTT_HOST`**                     | MQTT Broker IP/Host                                    |           |
+| **`MQTT_USERNAME`**                 | MQTT Broker Username                                   |           |
+| **`MQTT_PASSWORD`**                 | MQTT Broker Password                                   |           |
+| **`MQTT_PORT`**                     | IP or Host of you MQTT Broker                          | `1883`    |
+| **`MQTT_HA_AD_ENABLED`**            | Home Assistant Auto Discovery enabled                  | `true`    |
+| **`MQTT_HA_AD_DELETE_ON_SHUTDOWN`** | Delete Home Assistant Auto Discovery Topic on Shutdown | `false`   |
 
 _\*Variables without a default value are required_
 
@@ -58,6 +60,8 @@ services:
       - PHILIPS_AIR_DEVICE_NAME=
       - PHILIPS_AIR_PROTOCOL=http
       - PHILIPS_AIR_REFRESH_INTERVAL=120
+      - MQTT_HA_AD_ENABLED=true
+      - MQTT_HA_AD_DELETE_ON_SHUTDOWN=false
     restart: unless-stopped
     init: true
 ```

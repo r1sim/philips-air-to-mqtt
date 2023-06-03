@@ -57,7 +57,8 @@ export function getMqttHandler(
       qos: 0,
     },
   });
-  const mqttHomeAssistantConf = getHomeAssistantAutoDiscoveryHandler(
+  const mqttHomeAssistantConf = config.mqtt.homeAssistantAutoDiscovery.enabled
+    ? getHomeAssistantAutoDiscoveryHandler(
     {
       name: config.airPurifier.deviceName,
       firmware: {
@@ -67,14 +68,15 @@ export function getMqttHandler(
       },
     },
     mqttClient
-  );
+      )
+    : undefined;
   mqttClient.on('connect', () => {
     console.log('MQTT connected');
     mqttClient.subscribe(topics.modeControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
     mqttClient.subscribe(topics.childLockControl.commandTopic);
-    mqttHomeAssistantConf.publishAutoDiscovery(airDeviceStatus);
+    mqttHomeAssistantConf?.publishAutoDiscovery(airDeviceStatus);
     publishDeviceStatus(airDeviceStatus);
   });
   mqttClient.on('error', err => {
