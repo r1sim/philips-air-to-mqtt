@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.1.0...v1.2.0) (2023-06-03)
+
+
+### Bug Fixes
+
+* add graceful shutdown ([2104aaa](https://github.com/r1sim/philips-air-to-mqtt/commit/2104aaa0940b925ca9e2f1839bc9e34d54effd80))
+
+
+### Features
+
+* **mqtt:** add option to enable home assistant auto discovery ([7bf24bb](https://github.com/r1sim/philips-air-to-mqtt/commit/7bf24bb7590d46a48c476ed89dccb069fda06db2))
+
 # [1.1.0](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.0.1...v1.1.0) (2023-06-03)
 
 
