@@ -1,6 +1,6 @@
 import { getTopics } from './mqtt.js';
 import { setBrightness } from './commands/setBrightness.js';
-import { setChildLock } from './commands/setChildLock.js';
+//import { setChildLock } from './commands/setChildLock.js';
 import { setPresetMode } from './commands/setPresetMode.js';
 import { type PresetMode } from './types.js';
 import { airDeviceStatus } from '../index.js';
@@ -32,9 +32,9 @@ export async function handleMqttMessage(
       await setBrightness(parseInt(message), airClient);
       break;
     }
-    case topics.childLockControl.commandTopic: {
-      await setChildLock(message === 'ON', airClient);
-      break;
-    }
+    // case topics.childLockControl.commandTopic: {
+    //   await setChildLock(message === 'ON', airClient);
+    //   break;
+    // }
   }
 }

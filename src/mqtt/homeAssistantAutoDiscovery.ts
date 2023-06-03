@@ -24,7 +24,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   const topics = getTopics();
   const configTopicModeControl = `homeassistant/select/${device.name}/mode/config`;
   const configTopicLedControl = `homeassistant/light/${device.name}/light/config`;
-  const configTopicChildLockControl = `homeassistant/switch/${device.name}/childLock/config`;
+  //const configTopicChildLockControl = `homeassistant/switch/${device.name}/childLock/config`;
   const configTopicPm25Sensor = `homeassistant/sensor/${device.name}/pm25/config`;
   const configTopicAllergyIndexSensor = `homeassistant/sensor/${device.name}/allergenIndex/config`;
   const configTopicHoursPreFilterSensor = `homeassistant/sensor/${device.name}/hoursPreFilter/config`;
@@ -108,19 +108,19 @@ export function getHomeAssistantAutoDiscoveryHandler(
     device: getAutoDiscoveryDevice(),
   };
 
-  const configPayloadChildLock = {
-    state_topic: topics.childLockControl.stateTopic,
-    command_topic: topics.childLockControl.commandTopic,
-    state_value_template: '{{ value }}',
-    icon: 'mdi:lock',
-    name: 'Child Lock',
-    object_id: `${device.name}_childLock`,
-    unique_id: `${device.name}_childLock`,
-    availability_topic: deviceAvailabilityTopic,
-    payload_available: 'ready',
-    payload_not_available: 'lost',
-    device: getAutoDiscoveryDevice(),
-  };
+  // const configPayloadChildLock = {
+  //   state_topic: topics.childLockControl.stateTopic,
+  //   command_topic: topics.childLockControl.commandTopic,
+  //   state_value_template: '{{ value }}',
+  //   icon: 'mdi:lock',
+  //   name: 'Child Lock',
+  //   object_id: `${device.name}_childLock`,
+  //   unique_id: `${device.name}_childLock`,
+  //   availability_topic: deviceAvailabilityTopic,
+  //   payload_available: 'ready',
+  //   payload_not_available: 'lost',
+  //   device: getAutoDiscoveryDevice(),
+  // };
 
   const configPayloadPreFilterRemainingHoursSensor = {
     state_topic: topics.filterStatus.preFilterStateTopic,
@@ -197,8 +197,8 @@ export function getHomeAssistantAutoDiscoveryHandler(
       publish(configTopicPm25Sensor, configPayloadPm25Sensor);
     if (airDeviceStatus.iaql)
       publish(configTopicAllergyIndexSensor, configPayloadAllergyIndexSensor);
-    if (airDeviceStatus.cl)
-      publish(configTopicChildLockControl, configPayloadChildLock);
+    // if (airDeviceStatus.cl)
+    //   publish(configTopicChildLockControl, configPayloadChildLock);
 
     if (airDeviceStatus.fltsts0)
       publish(
@@ -227,7 +227,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     publish(configTopicLedControl, undefined);
     publish(configTopicPm25Sensor, undefined);
     publish(configTopicAllergyIndexSensor, undefined);
-    publish(configTopicChildLockControl, undefined);
+    //publish(configTopicChildLockControl, undefined);
     publish(configTopicHoursPreFilterSensor, undefined);
     publish(configTopicHoursCarbonFilterSensor, undefined);
     publish(configTopicHoursHepaFilterSensor, undefined);

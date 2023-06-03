@@ -19,10 +19,10 @@ export function getTopics() {
       stateTopicBrightness: `${topicPrefix}/brightness`,
       commandTopicBrightness: `${topicPrefix}/brightness/set`,
     },
-    childLockControl: {
-      stateTopic: `${topicPrefix}/childLock`,
-      commandTopic: `${topicPrefix}/childLock/set`,
-    },
+    // childLockControl: {
+    //   stateTopic: `${topicPrefix}/childLock`,
+    //   commandTopic: `${topicPrefix}/childLock/set`,
+    // },
     pm25Sensor: {
       stateTopic: `${topicPrefix}/pm25`,
     },
@@ -59,15 +59,15 @@ export function getMqttHandler(
   });
   const mqttHomeAssistantConf = config.mqtt.homeAssistantAutoDiscovery.enabled
     ? getHomeAssistantAutoDiscoveryHandler(
-    {
-      name: config.airPurifier.deviceName,
-      firmware: {
-        name: airDeviceStatus.name,
-        version:
-          airDeviceStatus.version ?? airDeviceStatus.swversion ?? 'unknown',
-      },
-    },
-    mqttClient
+        {
+          name: config.airPurifier.deviceName,
+          firmware: {
+            name: airDeviceStatus.name,
+            version:
+              airDeviceStatus.version ?? airDeviceStatus.swversion ?? 'unknown',
+          },
+        },
+        mqttClient
       )
     : undefined;
   mqttClient.on('connect', () => {
@@ -75,7 +75,7 @@ export function getMqttHandler(
     mqttClient.subscribe(topics.modeControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
-    mqttClient.subscribe(topics.childLockControl.commandTopic);
+    //mqttClient.subscribe(topics.childLockControl.commandTopic);
     mqttHomeAssistantConf?.publishAutoDiscovery(airDeviceStatus);
     publishDeviceStatus(airDeviceStatus);
   });
