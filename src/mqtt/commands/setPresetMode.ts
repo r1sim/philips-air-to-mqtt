@@ -1,5 +1,5 @@
+import { AirClient } from 'philips-air';
 import { type AirDeviceStatus } from '../../philipsTypes.js';
-import { airClient } from '../../index.js';
 import { type PresetMode } from '../types.js';
 import { setPower } from './setPower.js';
 
@@ -23,13 +23,13 @@ function mapOm(mode: PresetMode): AirDeviceStatus['om'] | undefined {
   return undefined;
 }
 
-export async function setPresetMode(newMode: PresetMode) {
+export async function setPresetMode(newMode: PresetMode, airClient: AirClient) {
   const pwr = newMode === 'off' ? '0' : '1';
   if (pwr === '0') {
-    await setPower(false);
+    await setPower(false, airClient);
     return;
   }
-  await setPower(true);
+  await setPower(true, airClient);
   const mode = mapMode(newMode);
   const om = mapOm(newMode);
   await airClient.setValues({ om, mode });

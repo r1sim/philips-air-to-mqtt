@@ -1,6 +1,7 @@
 import { type MqttClient } from 'mqtt';
 import { getTopics } from './mqtt.js';
 import config from '../config.js';
+import { AirDeviceStatus } from '../philipsTypes.js';
 
 export function getHomeAssistantAutoDiscoveryHandler(
   device: {
@@ -181,7 +182,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     if (message !== undefined) {
       const isString = typeof message === 'string';
       const mqttMessage = isString ? message : JSON.stringify(message);
-    mqtt.publish(topic, mqttMessage, { retain: true });
+      mqtt.publish(topic, mqttMessage, { retain: true });
     } else {
       mqtt.publish(topic, '', { retain: true });
     }
@@ -189,15 +190,15 @@ export function getHomeAssistantAutoDiscoveryHandler(
 
   const publishAutoDiscovery = (airDeviceStatus: AirDeviceStatus) => {
     if (airDeviceStatus.mode)
-    publish(configTopicModeControl, configPayloadModeControl);
+      publish(configTopicModeControl, configPayloadModeControl);
     if (airDeviceStatus.aqil)
-    publish(configTopicLedControl, configPayloadLedControl);
+      publish(configTopicLedControl, configPayloadLedControl);
     if (airDeviceStatus.pm25)
-    publish(configTopicPm25Sensor, configPayloadPm25Sensor);
+      publish(configTopicPm25Sensor, configPayloadPm25Sensor);
     if (airDeviceStatus.iaql)
-    publish(configTopicAllergyIndexSensor, configPayloadAllergyIndexSensor);
+      publish(configTopicAllergyIndexSensor, configPayloadAllergyIndexSensor);
     if (airDeviceStatus.cl)
-    publish(configTopicChildLockControl, configPayloadChildLock);
+      publish(configTopicChildLockControl, configPayloadChildLock);
 
     if (airDeviceStatus.fltsts0)
       publish(

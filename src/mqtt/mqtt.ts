@@ -1,11 +1,9 @@
 import { connect } from 'mqtt';
 import config from '../config.js';
-import {
-  type AirDeviceFirmware,
-  type AirDeviceStatus,
-} from '../philipsTypes.js';
+import { type AirDeviceStatus } from '../philipsTypes.js';
 import { handleMqttMessage } from './handleMessage.js';
 import { getHomeAssistantAutoDiscoveryHandler } from './homeAssistantAutoDiscovery.js';
+import { AirClient } from 'philips-air';
 
 export function getTopics() {
   const topicPrefix = `${config.mqtt.topicPrefix}/${config.airPurifier.deviceName}`;
@@ -40,8 +38,9 @@ export function getTopics() {
 }
 
 export function getMqttHandler(
-  firmware: AirDeviceFirmware,
-  callbacks: { onRequestUpdate: () => Promise<AirDeviceStatus | undefined> }
+  airDeviceStatus: AirDeviceStatus,
+  airClient: AirClient,
+  callbacks: { onRequestUpdate: () => Promise<void> }
 ) {
   const topics = getTopics();
   console.info('Connecting to MQTT broker');
@@ -52,7 +51,14 @@ export function getMqttHandler(
     password: config.mqtt.connection.password,
   });
   const mqttHomeAssistantConf = getHomeAssistantAutoDiscoveryHandler(
-    { name: config.airPurifier.deviceName, firmware },
+    {
+      name: config.airPurifier.deviceName,
+      firmware: {
+        name: airDeviceStatus.name,
+        version:
+          airDeviceStatus.version ?? airDeviceStatus.swversion ?? 'unknown',
+      },
+    },
     mqttClient
   );
   mqttClient.on('connect', () => {
@@ -61,8 +67,8 @@ export function getMqttHandler(
     mqttClient.subscribe(topics.ledControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
     mqttClient.subscribe(topics.childLockControl.commandTopic);
-    mqttHomeAssistantConf.publishAutoDiscovery();
-    callbacks.onRequestUpdate();
+    mqttHomeAssistantConf.publishAutoDiscovery(airDeviceStatus);
+    publishDeviceStatus(airDeviceStatus);
   });
   mqttClient.on('error', err => {
     console.error('mqtt error', err);
@@ -71,7 +77,7 @@ export function getMqttHandler(
     console.error('mqtt disconnected');
   });
   mqttClient.on('message', async (topic, message) => {
-    await handleMqttMessage(topic, message, callbacks.onRequestUpdate);
+    await handleMqttMessage(topic, message, airClient);
     callbacks.onRequestUpdate();
   });
 
@@ -85,8 +91,8 @@ export function getMqttHandler(
     );
   };
 
-  const publishMqttDeviceStatus = (status: AirDeviceStatus) => {
-    console.log(JSON.stringify(status));
+  const publishDeviceStatus = (status: AirDeviceStatus) => {
+    console.log('Publishing device status', JSON.stringify(status));
     if (!mqttClient?.connected) return;
     const mode =
       status.pwr === '0'
@@ -137,7 +143,7 @@ export function getMqttHandler(
   };
 
   return {
-    publishMqttDeviceStatus,
+    publishDeviceStatus,
     publishConnectionLost,
   };
 }
