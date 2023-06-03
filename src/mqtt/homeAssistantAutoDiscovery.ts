@@ -22,7 +22,6 @@ export function getHomeAssistantAutoDiscoveryHandler(
   });
 
   const topics = getTopics();
-  const deviceAvailabilityTopic = `philips-air/${device.name}/$state`;
   const configTopicModeControl = `homeassistant/select/${device.name}/mode/config`;
   const configTopicLedControl = `homeassistant/light/${device.name}/light/config`;
   const configTopicChildLockControl = `homeassistant/switch/${device.name}/childLock/config`;
@@ -44,7 +43,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Light',
     object_id: `${device.name}_light`,
     unique_id: `${device.name}_LedControl`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
     payload_available: 'ready',
     payload_not_available: 'lost',
     // payload_on: "100",
@@ -75,7 +74,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Mode',
     object_id: `${device.name}_modeControl`,
     unique_id: `${device.name}_mode`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
     payload_available: 'ready',
     payload_not_available: 'lost',
     device: getAutoDiscoveryDevice(),
@@ -88,7 +87,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'PM2.5',
     object_id: `${device.name}_pm25`,
     unique_id: `${device.name}_pm25`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
     payload_available: 'ready',
     payload_not_available: 'lost',
     unit_of_measurement: 'μg/m³',
@@ -102,7 +101,8 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Allergy Index',
     object_id: `${device.name}_allergenIndex`,
     unique_id: `${device.name}allergenIndex`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
+    unit_of_measurement: 'AI',
     payload_available: 'ready',
     payload_not_available: 'lost',
     device: getAutoDiscoveryDevice(),
@@ -129,7 +129,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Remaining Pre-filter Hours',
     object_id: `${device.name}_preFilter`,
     unique_id: `${device.name}_preFilter`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
     unit_of_measurement: 'Hours',
     payload_available: 'ready',
     payload_not_available: 'lost',
@@ -143,7 +143,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Remaining Carbon Filter Hours',
     object_id: `${device.name}_carbonFilter`,
     unique_id: `${device.name}_carbonFilter`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
     unit_of_measurement: 'Hours',
     payload_available: 'ready',
     payload_not_available: 'lost',
@@ -157,7 +157,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Remaining HEPA Filter Hours',
     object_id: `${device.name}_hepaFilter`,
     unique_id: `${device.name}_hepaFilter`,
-    availability_topic: deviceAvailabilityTopic,
+    availability_topic: topics.deviceAvailabilityTopic,
     unit_of_measurement: 'Hours',
     payload_available: 'ready',
     payload_not_available: 'lost',
@@ -171,8 +171,8 @@ export function getHomeAssistantAutoDiscoveryHandler(
     name: 'Remaining Wick Filter Hours',
     object_id: `${device.name}_wickFilter`,
     unique_id: `${device.name}_wickFilter`,
-    availability_topic: deviceAvailabilityTopic,
-    unit_of_measurement: 'h',
+    availability_topic: topics.deviceAvailabilityTopic,
+    unit_of_measurement: 'Hours',
     payload_available: 'ready',
     payload_not_available: 'lost',
     device: getAutoDiscoveryDevice(),
@@ -232,20 +232,9 @@ export function getHomeAssistantAutoDiscoveryHandler(
     publish(configTopicHoursCarbonFilterSensor, undefined);
     publish(configTopicHoursHepaFilterSensor, undefined);
     publish(configTopicHoursWickFilterHoursSensor, undefined);
-    publish(deviceAvailabilityTopic, undefined);
-  };
-
-  const deviceReady = () => {
-    publish(deviceAvailabilityTopic, 'ready');
-  };
-
-  const deviceLost = () => {
-    publish(deviceAvailabilityTopic, 'lost');
   };
 
   return {
-    deviceReady,
-    deviceLost,
     publishAutoDiscovery,
     unpublishAutoDiscovery,
   };

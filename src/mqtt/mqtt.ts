@@ -8,6 +8,7 @@ import { AirClient } from 'philips-air';
 export function getTopics() {
   const topicPrefix = `${config.mqtt.topicPrefix}/${config.airPurifier.deviceName}`;
   return {
+    deviceAvailabilityTopic: `${topicPrefix}/$state`,
     modeControl: {
       stateTopic: `${topicPrefix}/mode`,
       commandTopic: `${topicPrefix}/mode/set`,
@@ -49,6 +50,12 @@ export function getMqttHandler(
     port: config.mqtt.connection.port,
     username: config.mqtt.connection.username,
     password: config.mqtt.connection.password,
+    will: {
+      topic: topics.deviceAvailabilityTopic,
+      payload: 'lost',
+      retain: true,
+      qos: 0,
+    },
   });
   const mqttHomeAssistantConf = getHomeAssistantAutoDiscoveryHandler(
     {
@@ -134,16 +141,28 @@ export function getMqttHandler(
     if (status.fltsts2)
       publish(topics.filterStatus.hepaFilterStateTopic, status.fltsts2);
 
-    publish(topics.childLockControl.stateTopic, status.cl ? 'ON' : 'OFF');
-    mqttHomeAssistantConf.deviceReady();
+    //publish(topics.childLockControl.stateTopic, status.cl ? 'ON' : 'OFF');
+    publish(topics.deviceAvailabilityTopic, 'ready');
   };
 
-  const publishConnectionLost = () => {
-    mqttHomeAssistantConf.deviceLost();
+  const handleShutdown = () => {
+    if (
+      config.mqtt.homeAssistantAutoDiscovery.enabled &&
+      config.mqtt.homeAssistantAutoDiscovery.deleteOnShutdown
+    ) {
+      mqttHomeAssistantConf?.unpublishAutoDiscovery();
+    }
+
+    mqttClient.end();
+  };
+
+  const publishError = () => {
+    publish(topics.deviceAvailabilityTopic, 'error');
   };
 
   return {
+    handleShutdown,
     publishDeviceStatus,
-    publishConnectionLost,
+    publishError,
   };
 }
