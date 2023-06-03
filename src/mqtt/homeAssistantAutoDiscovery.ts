@@ -27,6 +27,10 @@ export function getHomeAssistantAutoDiscoveryHandler(
   const configTopicChildLockControl = `homeassistant/switch/${device.name}/childLock/config`;
   const configTopicPm25Sensor = `homeassistant/sensor/${device.name}/pm25/config`;
   const configTopicAllergyIndexSensor = `homeassistant/sensor/${device.name}/allergenIndex/config`;
+  const configTopicHoursPreFilterSensor = `homeassistant/sensor/${device.name}/hoursPreFilter/config`;
+  const configTopicHoursHepaFilterSensor = `homeassistant/sensor/${device.name}/hoursHepaFilter/config`;
+  const configTopicHoursCarbonFilterSensor = `homeassistant/sensor/${device.name}/hoursCarbonFilter/config`;
+  const configTopicHoursWickFilterHoursSensor = `homeassistant/sensor/${device.name}/hoursWickFilter/config`;
 
   const configPayloadLedControl = {
     state_topic: topics.ledControl.stateTopic,
@@ -117,6 +121,62 @@ export function getHomeAssistantAutoDiscoveryHandler(
     device: getAutoDiscoveryDevice(),
   };
 
+  const configPayloadPreFilterRemainingHoursSensor = {
+    state_topic: topics.filterStatus.preFilterStateTopic,
+    state_value_template: '{{ value }}',
+    icon: 'mdi:fan-clock',
+    name: 'Remaining Pre-filter Hours',
+    object_id: `${device.name}_preFilter`,
+    unique_id: `${device.name}_preFilter`,
+    availability_topic: deviceAvailabilityTopic,
+    unit_of_measurement: 'Hours',
+    payload_available: 'ready',
+    payload_not_available: 'lost',
+    device: getAutoDiscoveryDevice(),
+  };
+
+  const configPayloadCarbonFilterRemainingHoursSensor = {
+    state_topic: topics.filterStatus.carbonFilterStateTopic,
+    state_value_template: '{{ value }}',
+    icon: 'mdi:fan-clock',
+    name: 'Remaining Carbon Filter Hours',
+    object_id: `${device.name}_carbonFilter`,
+    unique_id: `${device.name}_carbonFilter`,
+    availability_topic: deviceAvailabilityTopic,
+    unit_of_measurement: 'Hours',
+    payload_available: 'ready',
+    payload_not_available: 'lost',
+    device: getAutoDiscoveryDevice(),
+  };
+
+  const configPayloadHepaFilterRemainingHoursSensor = {
+    state_topic: topics.filterStatus.hepaFilterStateTopic,
+    state_value_template: '{{ value }}',
+    icon: 'mdi:fan-clock',
+    name: 'Remaining HEPA Filter Hours',
+    object_id: `${device.name}_hepaFilter`,
+    unique_id: `${device.name}_hepaFilter`,
+    availability_topic: deviceAvailabilityTopic,
+    unit_of_measurement: 'Hours',
+    payload_available: 'ready',
+    payload_not_available: 'lost',
+    device: getAutoDiscoveryDevice(),
+  };
+
+  const configPayloadWickFilterRemainingHoursSensor = {
+    state_topic: topics.filterStatus.wickFilterStateTopic,
+    state_value_template: '{{ value }}',
+    icon: 'mdi:fan-clock',
+    name: 'Remaining Wick Filter Hours',
+    object_id: `${device.name}_wickFilter`,
+    unique_id: `${device.name}_wickFilter`,
+    availability_topic: deviceAvailabilityTopic,
+    unit_of_measurement: 'h',
+    payload_available: 'ready',
+    payload_not_available: 'lost',
+    device: getAutoDiscoveryDevice(),
+  };
+
   const publish = (topic: string, message: unknown) => {
     if (message !== undefined) {
       const isString = typeof message === 'string';
@@ -127,13 +187,38 @@ export function getHomeAssistantAutoDiscoveryHandler(
     }
   };
 
-  const publishAutoDiscovery = () => {
+  const publishAutoDiscovery = (airDeviceStatus: AirDeviceStatus) => {
+    if (airDeviceStatus.mode)
     publish(configTopicModeControl, configPayloadModeControl);
+    if (airDeviceStatus.aqil)
     publish(configTopicLedControl, configPayloadLedControl);
+    if (airDeviceStatus.pm25)
     publish(configTopicPm25Sensor, configPayloadPm25Sensor);
+    if (airDeviceStatus.iaql)
     publish(configTopicAllergyIndexSensor, configPayloadAllergyIndexSensor);
+    if (airDeviceStatus.cl)
     publish(configTopicChildLockControl, configPayloadChildLock);
-    publish(deviceAvailabilityTopic, 'lost');
+
+    if (airDeviceStatus.fltsts0)
+      publish(
+        configTopicHoursPreFilterSensor,
+        configPayloadPreFilterRemainingHoursSensor
+      );
+    if (airDeviceStatus.fltsts1)
+      publish(
+        configTopicHoursCarbonFilterSensor,
+        configPayloadCarbonFilterRemainingHoursSensor
+      );
+    if (airDeviceStatus.fltsts2)
+      publish(
+        configTopicHoursHepaFilterSensor,
+        configPayloadHepaFilterRemainingHoursSensor
+      );
+    if (airDeviceStatus.wicksts)
+      publish(
+        configTopicHoursWickFilterHoursSensor,
+        configPayloadWickFilterRemainingHoursSensor
+      );
   };
 
   const unpublishAutoDiscovery = () => {
@@ -142,6 +227,10 @@ export function getHomeAssistantAutoDiscoveryHandler(
     publish(configTopicPm25Sensor, undefined);
     publish(configTopicAllergyIndexSensor, undefined);
     publish(configTopicChildLockControl, undefined);
+    publish(configTopicHoursPreFilterSensor, undefined);
+    publish(configTopicHoursCarbonFilterSensor, undefined);
+    publish(configTopicHoursHepaFilterSensor, undefined);
+    publish(configTopicHoursWickFilterHoursSensor, undefined);
     publish(deviceAvailabilityTopic, undefined);
   };
 

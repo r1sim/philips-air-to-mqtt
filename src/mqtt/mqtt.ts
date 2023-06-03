@@ -30,6 +30,12 @@ export function getTopics() {
     allergyIndexSensor: {
       stateTopic: `${topicPrefix}/allergenIndex`,
     },
+    filterStatus: {
+      preFilterStateTopic: `${topicPrefix}/preFilter`,
+      carbonFilterStateTopic: `${topicPrefix}/carbonFilter`,
+      hepaFilterStateTopic: `${topicPrefix}/hepaFilter`,
+      wickFilterStateTopic: `${topicPrefix}/wickFilter`,
+    },
   };
 }
 
@@ -38,6 +44,7 @@ export function getMqttHandler(
   callbacks: { onRequestUpdate: () => Promise<AirDeviceStatus | undefined> }
 ) {
   const topics = getTopics();
+  console.info('Connecting to MQTT broker');
   const mqttClient = connect({
     host: config.mqtt.connection.host,
     port: config.mqtt.connection.port,
@@ -49,7 +56,7 @@ export function getMqttHandler(
     mqttClient
   );
   mqttClient.on('connect', () => {
-    console.log('mqtt connected');
+    console.log('MQTT connected');
     mqttClient.subscribe(topics.modeControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
@@ -104,10 +111,23 @@ export function getMqttHandler(
 
     const topics = getTopics();
     publish(topics.modeControl.stateTopic, mode);
-    publish(topics.ledControl.stateTopicBrightness, status.aqil.toString());
-    publish(topics.ledControl.stateTopic, status.aqil === 0 ? 'OFF' : 'ON');
-    publish(topics.pm25Sensor.stateTopic, status.pm25.toString());
-    publish(topics.allergyIndexSensor.stateTopic, status.iaql.toString());
+    if (status.aqil)
+      publish(topics.ledControl.stateTopicBrightness, status.aqil);
+    if (status.aqil)
+      publish(topics.ledControl.stateTopic, status.aqil === 0 ? 'OFF' : 'ON');
+    if (status.pm25) publish(topics.pm25Sensor.stateTopic, status.pm25);
+    if (status.iaql) publish(topics.allergyIndexSensor.stateTopic, status.iaql);
+
+    // Filter Status
+    if (status.wicksts)
+      publish(topics.filterStatus.wickFilterStateTopic, status.wicksts);
+    if (status.fltsts0)
+      publish(topics.filterStatus.preFilterStateTopic, status.fltsts0);
+    if (status.fltsts1)
+      publish(topics.filterStatus.carbonFilterStateTopic, status.fltsts1);
+    if (status.fltsts2)
+      publish(topics.filterStatus.hepaFilterStateTopic, status.fltsts2);
+
     publish(topics.childLockControl.stateTopic, status.cl ? 'ON' : 'OFF');
     mqttHomeAssistantConf.deviceReady();
   };
