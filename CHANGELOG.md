@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.0.1...v1.1.0) (2023-06-03)
+
+
+### Features
+
+* add filter status ([a20065f](https://github.com/r1sim/philips-air-to-mqtt/commit/a20065f1cf85c86aa97d8831d7a28ecc07d04a4f))
+
 ## [1.0.1](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.0.0...v1.0.1) (2023-06-02)
 
 
