@@ -66,18 +66,12 @@ function setupUpdateIntervals(airClient: AirClient) {
   setInterval(async () => {
     await updateDeviceStatus(airClient);
     if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
-  }, config.airPurifier.refreshInterval * 1000);
+  }, config.airPurifier.refreshInterval * 1000).unref();
 
   setInterval(async () => {
     await updateFilterStatus(airClient);
     if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
-  }, 2 * 3600 * 1000); // Check for filters every 2 hours
-}
-
-function shutdown() {
-  console.log('Shutting down...');
-
-  process.exit(0);
+  }, 2 * 3600 * 1000).unref(); // Check for filters every 2 hours
 }
 
 async function main() {
@@ -85,15 +79,20 @@ async function main() {
   const { host, protocol } = config.airPurifier.connection;
   const client = await connectToAirPurifier(host, protocol);
 
-  process.on('SIGINT', shutdown);
-  process.on('SIGTERM', shutdown);
-
   if (!airDeviceStatus) return console.error('Unable to get device status');
   mqttHandler = getMqttHandler(airDeviceStatus, client, {
     onRequestUpdate: () => updateDeviceStatus(client),
   });
 
   setupUpdateIntervals(client);
+
+  const shutdown = () => {
+    console.info('Shutting down');
+    mqttHandler?.handleShutdown();
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 
 main();
