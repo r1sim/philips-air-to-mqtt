@@ -106,11 +106,11 @@ export function getMqttHandler(
     const mode =
       status.pwr === '0'
         ? 'off'
-        : status.mode === 'A'
+        : status.mode === 'P'
         ? 'auto'
         : status.mode === 'B'
         ? 'bacteria'
-        : status.mode === 'P'
+        : status.mode === 'A'
         ? 'allergen'
         : status.om === 's'
         ? 'sleep'
