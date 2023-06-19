@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.2.0...v1.2.1) (2023-06-19)
+
+
+### Bug Fixes
+
+* **mode control:** fix mapping of `allergen` & `auto` ([5c34586](https://github.com/r1sim/philips-air-to-mqtt/commit/5c345860b5ca0efe75b74c1e15ad5d1946e7b7ab))
+
 # [1.2.0](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.1.0...v1.2.0) (2023-06-03)
 
 
