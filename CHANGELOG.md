@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.2.1...v1.3.0) (2023-09-09)
+
+
+### Bug Fixes
+
+* add config validation ([3b09714](https://github.com/r1sim/philips-air-to-mqtt/commit/3b09714e9ddc9767f21dff6663db4d89b775495f))
+* publish device status to mqtt in `onRequestUpdate` ([c27db30](https://github.com/r1sim/philips-air-to-mqtt/commit/c27db30a311df607103fabc46e445ac2c5158517))
+
+
+### Features
+
+* add `PresetMode` `on` (equivalent to `auto`) ([063be62](https://github.com/r1sim/philips-air-to-mqtt/commit/063be626d4e081fe8ca53f3de9d8613a45bc90fb))
+* **HA:** replace `select` with `fan` ([f531549](https://github.com/r1sim/philips-air-to-mqtt/commit/f531549d1f518accb1f620adba0c645bf67738d9))
+
 ## [1.2.1](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.2.0...v1.2.1) (2023-06-19)
 
 
