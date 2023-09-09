@@ -4,6 +4,7 @@ import { type PresetMode } from '../types.js';
 import { setPower } from './setPower.js';
 
 function mapMode(mode: PresetMode): AirDeviceStatus['mode'] | undefined {
+  if (mode === 'on') return 'P';
   if (mode === 'auto') return 'P';
   if (mode === 'allergen') return 'A';
   if (mode === 'bacteria') return 'B';

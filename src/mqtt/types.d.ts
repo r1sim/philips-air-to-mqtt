@@ -1,4 +1,5 @@
 export type PresetMode =
+  | 'on'
   | 'auto'
   | 'sleep'
   | 'low'
