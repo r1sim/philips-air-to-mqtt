@@ -37,6 +37,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
+    "joi": "^17.10.1",
     "mqtt": "^4.3.7",
     "philips-air": "^0.6.0"
   },
