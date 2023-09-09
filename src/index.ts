@@ -81,7 +81,10 @@ async function main() {
 
   if (!airDeviceStatus) return console.error('Unable to get device status');
   mqttHandler = getMqttHandler(airDeviceStatus, client, {
-    onRequestUpdate: () => updateDeviceStatus(client),
+    onRequestUpdate: async () => {
+      await updateDeviceStatus(client);
+      if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
+    },
   });
 
   setupUpdateIntervals(client);
