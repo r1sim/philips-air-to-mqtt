@@ -9,6 +9,13 @@ export function getTopics() {
   const topicPrefix = `${config.mqtt.topicPrefix}/${config.airPurifier.deviceName}`;
   return {
     deviceAvailabilityTopic: `${topicPrefix}/$state`,
+    onStatus: {
+      stateTopic: `${topicPrefix}/on`,
+    },
+    percentage: {
+      stateTopic: `${topicPrefix}/percentage`,
+      commandTopic: `${topicPrefix}/percentage/set`,
+    },
     modeControl: {
       stateTopic: `${topicPrefix}/mode`,
       commandTopic: `${topicPrefix}/mode/set`,
@@ -75,6 +82,7 @@ export function getMqttHandler(
     mqttClient.subscribe(topics.modeControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopic);
     mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
+    mqttClient.subscribe(topics.percentage.commandTopic);
     //mqttClient.subscribe(topics.childLockControl.commandTopic);
     mqttHomeAssistantConf?.publishAutoDiscovery(airDeviceStatus);
     publishDeviceStatus(airDeviceStatus);
@@ -86,8 +94,12 @@ export function getMqttHandler(
     console.error('mqtt disconnected');
   });
   mqttClient.on('message', async (topic, message) => {
-    await handleMqttMessage(topic, message, airClient);
-    callbacks.onRequestUpdate();
+    try {
+      await handleMqttMessage(topic, message, airClient);
+      callbacks.onRequestUpdate();
+    } catch (error) {
+      console.error('Error while handling mqtt message', error);
+    }
   });
 
   const publish = (topic: string, message: unknown) => {
@@ -125,7 +137,6 @@ export function getMqttHandler(
         : 'off';
 
     const topics = getTopics();
-    publish(topics.modeControl.stateTopic, mode);
     if (status.aqil)
       publish(topics.ledControl.stateTopicBrightness, status.aqil);
     if (status.aqil)
@@ -142,6 +153,47 @@ export function getMqttHandler(
       publish(topics.filterStatus.carbonFilterStateTopic, status.fltsts1);
     if (status.fltsts2)
       publish(topics.filterStatus.hepaFilterStateTopic, status.fltsts2);
+
+    publish(topics.onStatus.stateTopic, status.pwr === '0' ? 'off' : 'on');
+
+    switch (mode) {
+      case 'off':
+        publish(topics.percentage.stateTopic, 'None');
+        publish(topics.modeControl.stateTopic, 'off');
+        break;
+      case 'sleep':
+        publish(topics.percentage.stateTopic, 1);
+        publish(topics.modeControl.stateTopic, 'sleep');
+        break;
+      case 'low':
+        publish(topics.percentage.stateTopic, 2);
+        publish(topics.modeControl.stateTopic, 'low');
+        break;
+      case 'medium':
+        publish(topics.percentage.stateTopic, 3);
+        publish(topics.modeControl.stateTopic, 'medium');
+        break;
+      case 'high':
+        publish(topics.percentage.stateTopic, 4);
+        publish(topics.modeControl.stateTopic, 'high');
+        break;
+      case 'max':
+        publish(topics.percentage.stateTopic, 5);
+        publish(topics.modeControl.stateTopic, 'turbo');
+        break;
+      case 'auto':
+        publish(topics.percentage.stateTopic, 'None');
+        publish(topics.modeControl.stateTopic, 'auto');
+        break;
+      case 'bacteria':
+        publish(topics.percentage.stateTopic, 'None');
+        publish(topics.modeControl.stateTopic, 'bacteria');
+        break;
+      case 'allergen':
+        publish(topics.percentage.stateTopic, 'None');
+        publish(topics.modeControl.stateTopic, 'allergen');
+        break;
+    }
 
     //publish(topics.childLockControl.stateTopic, status.cl ? 'ON' : 'OFF');
     publish(topics.deviceAvailabilityTopic, 'ready');

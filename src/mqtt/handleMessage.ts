@@ -32,6 +32,20 @@ export async function handleMqttMessage(
       await setBrightness(parseInt(message), airClient);
       break;
     }
+    case topics.percentage.commandTopic: {
+      const percentage = parseInt(message);
+      if (percentage === 5) {
+        await setPresetMode('turbo', airClient);
+      } else if (percentage === 4) {
+        await setPresetMode('high', airClient);
+      } else if (percentage === 3) {
+        await setPresetMode('medium', airClient);
+      } else if (percentage === 2) {
+        await setPresetMode('low', airClient);
+      } else {
+        await setPresetMode('sleep', airClient);
+      }
+    }
     // case topics.childLockControl.commandTopic: {
     //   await setChildLock(message === 'ON', airClient);
     //   break;

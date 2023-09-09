@@ -22,7 +22,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   });
 
   const topics = getTopics();
-  const configTopicModeControl = `homeassistant/select/${device.name}/mode/config`;
+  const configTopicFanControl = `homeassistant/fan/${device.name}/mode/config`;
   const configTopicLedControl = `homeassistant/light/${device.name}/light/config`;
   //const configTopicChildLockControl = `homeassistant/switch/${device.name}/childLock/config`;
   const configTopicPm25Sensor = `homeassistant/sensor/${device.name}/pm25/config`;
@@ -55,29 +55,36 @@ export function getHomeAssistantAutoDiscoveryHandler(
     device: getAutoDiscoveryDevice(),
   };
 
-  const configPayloadModeControl = {
-    state_topic: topics.modeControl.stateTopic,
-    state_value_template: '{{ value }}',
+  const configFan = {
+    state_topic: topics.onStatus.stateTopic,
     command_topic: topics.modeControl.commandTopic,
-    options: [
+    object_id: `${device.name}_fan`,
+    unique_id: `${device.name}_fan`,
+    payload_on: 'on',
+    payload_off: 'off',
+    availability_topic: topics.deviceAvailabilityTopic,
+    payload_available: 'ready',
+    payload_not_available: 'lost',
+    device: getAutoDiscoveryDevice(),
+    icon: 'mdi:fan',
+    name: device.name,
+    percentage_state_topic: topics.percentage.stateTopic,
+    percentage_command_topic: topics.percentage.commandTopic,
+    preset_modes: [
       'auto',
+      'allergen',
+      'bacteria',
       'sleep',
       'low',
       'medium',
       'high',
       'turbo',
-      'allergen',
-      'bacteria',
-      'off',
     ],
-    icon: 'mdi:fan',
-    name: 'Mode',
-    object_id: `${device.name}_modeControl`,
-    unique_id: `${device.name}_mode`,
-    availability_topic: topics.deviceAvailabilityTopic,
-    payload_available: 'ready',
-    payload_not_available: 'lost',
-    device: getAutoDiscoveryDevice(),
+    preset_mode_state_topic: topics.modeControl.stateTopic,
+    preset_mode_command_topic: topics.modeControl.commandTopic,
+    preset_mode_state_template: '{{ value }}',
+    speed_range_min: 1,
+    speed_range_max: 5,
   };
 
   const configPayloadPm25Sensor = {
@@ -189,8 +196,9 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const publishAutoDiscovery = (airDeviceStatus: AirDeviceStatus) => {
-    if (airDeviceStatus.mode)
-      publish(configTopicModeControl, configPayloadModeControl);
+    if (airDeviceStatus.mode) {
+      publish(configTopicFanControl, configFan);
+    }
     if (airDeviceStatus.aqil)
       publish(configTopicLedControl, configPayloadLedControl);
     if (airDeviceStatus.pm25)
@@ -223,7 +231,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const unpublishAutoDiscovery = () => {
-    publish(configTopicModeControl, undefined);
+    publish(configTopicFanControl, undefined);
     publish(configTopicLedControl, undefined);
     publish(configTopicPm25Sensor, undefined);
     publish(configTopicAllergyIndexSensor, undefined);
