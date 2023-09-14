@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.3.0...v1.3.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* set device to unavailable when no connection is possible ([5bf260f](https://github.com/r1sim/philips-air-to-mqtt/commit/5bf260fc8308af858b93ec93d3b0a40c70c52a60))
+
 # [1.3.0](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.2.1...v1.3.0) (2023-09-09)
 
 
