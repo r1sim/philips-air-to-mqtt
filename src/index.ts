@@ -1,7 +1,8 @@
 import { AirClient, CoapClient, HttpClient } from 'philips-air';
 import config from './config.js';
-import { getMqttHandler } from './mqtt/mqtt.js';
+import { getMqttHandler, getTopics } from './mqtt/mqtt.js';
 import { AirDeviceStatus } from './philipsTypes.js';
+import { connect } from 'mqtt';
 
 export let airDeviceStatus: AirDeviceStatus | undefined = undefined;
 let mqttHandler: ReturnType<typeof getMqttHandler> | undefined = undefined;
@@ -9,7 +10,7 @@ let mqttHandler: ReturnType<typeof getMqttHandler> | undefined = undefined;
 async function connectToAirPurifier(host: string, protocol: 'coap' | 'http') {
   const getClient = async (protocol: 'coap' | 'http') => {
     const client =
-      protocol === 'coap' ? new CoapClient(host) : new HttpClient(host, 20000);
+      protocol === 'coap' ? new CoapClient(host) : new HttpClient(host, 2000);
     await updateDeviceStatus(client);
     await updateFilterStatus(client);
     await updateFirmwareStatus(client);
@@ -30,7 +31,7 @@ async function updateFirmwareStatus(airClient: AirClient) {
     })
     .then(firmware => {
       console.debug('Firmware', JSON.stringify(firmware));
-      airDeviceStatus = { ...airDeviceStatus, ...firmware };
+      if (firmware) airDeviceStatus = { ...airDeviceStatus, ...firmware };
     });
 }
 
@@ -44,8 +45,10 @@ async function updateFilterStatus(airClient: AirClient) {
     })
     .then(filters => {
       console.debug('Filters', JSON.stringify(filters));
-      airDeviceStatus = { ...airDeviceStatus, ...filters };
-      if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
+      if (filters) {
+        airDeviceStatus = { ...airDeviceStatus, ...filters };
+        if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
+      }
     });
 }
 
@@ -58,9 +61,11 @@ async function updateDeviceStatus(airClient: AirClient) {
       mqttHandler?.publishError();
     })
     .then(status => {
-      console.debug('Filters', JSON.stringify(status));
-      airDeviceStatus = { ...airDeviceStatus, ...status };
-      if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
+      console.debug('Device Status', JSON.stringify(status));
+      if (status) {
+        airDeviceStatus = { ...airDeviceStatus, ...status };
+        if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
+      }
     });
 }
 
@@ -75,19 +80,46 @@ function setupUpdateIntervals(airClient: AirClient) {
 }
 
 async function main() {
-  console.info('Starting Philips Air Purifier MQTT Bridge');
-  const { host, protocol } = config.airPurifier.connection;
-  const client = await connectToAirPurifier(host, protocol);
-
-  if (!airDeviceStatus) return console.error('Unable to get device status');
-  mqttHandler = getMqttHandler(airDeviceStatus, client, {
-    onRequestUpdate: async () => {
-      await updateDeviceStatus(client);
-      if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
+  console.log('Connecting to MQTT');
+  const topics = getTopics();
+  const mqttClient = connect({
+    host: config.mqtt.connection.host,
+    port: config.mqtt.connection.port,
+    username: config.mqtt.connection.username,
+    password: config.mqtt.connection.password,
+    will: {
+      topic: topics.deviceAvailabilityTopic,
+      payload: 'lost',
+      retain: true,
+      qos: 0,
     },
   });
+  mqttClient.on('connect', async () => {
+    console.info('Starting Philips Air Purifier MQTT Bridge');
+    const { host, protocol } = config.airPurifier.connection;
+    const client = await connectToAirPurifier(host, protocol);
 
-  setupUpdateIntervals(client);
+    if (!airDeviceStatus) {
+      console.error('Could not connect to air purifier');
+      process.exitCode = 1;
+      mqttClient.end();
+      return;
+    }
+    console.log(airDeviceStatus);
+    mqttHandler = getMqttHandler(mqttClient, airDeviceStatus, client, {
+      onRequestUpdate: async () => {
+        await updateDeviceStatus(client);
+      },
+    });
+
+    setupUpdateIntervals(client);
+  });
+  mqttClient.on('error', err => {
+    console.error('mqtt error', err);
+  });
+  mqttClient.on('disconnect', () => {
+    console.error('mqtt disconnected');
+  });
 
   const shutdown = () => {
     console.info('Shutting down');

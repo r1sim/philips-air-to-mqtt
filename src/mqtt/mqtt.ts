@@ -1,4 +1,4 @@
-import { connect } from 'mqtt';
+import { MqttClient } from 'mqtt';
 import config from '../config.js';
 import { type AirDeviceStatus } from '../philipsTypes.js';
 import { handleMqttMessage } from './handleMessage.js';
@@ -46,24 +46,12 @@ export function getTopics() {
 }
 
 export function getMqttHandler(
+  mqttClient: MqttClient,
   airDeviceStatus: AirDeviceStatus,
   airClient: AirClient,
   callbacks: { onRequestUpdate: () => Promise<void> }
 ) {
   const topics = getTopics();
-  console.info('Connecting to MQTT broker');
-  const mqttClient = connect({
-    host: config.mqtt.connection.host,
-    port: config.mqtt.connection.port,
-    username: config.mqtt.connection.username,
-    password: config.mqtt.connection.password,
-    will: {
-      topic: topics.deviceAvailabilityTopic,
-      payload: 'lost',
-      retain: true,
-      qos: 0,
-    },
-  });
   const mqttHomeAssistantConf = config.mqtt.homeAssistantAutoDiscovery.enabled
     ? getHomeAssistantAutoDiscoveryHandler(
         {
@@ -77,22 +65,7 @@ export function getMqttHandler(
         mqttClient
       )
     : undefined;
-  mqttClient.on('connect', () => {
-    console.log('MQTT connected');
-    mqttClient.subscribe(topics.modeControl.commandTopic);
-    mqttClient.subscribe(topics.ledControl.commandTopic);
-    mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
-    mqttClient.subscribe(topics.percentage.commandTopic);
-    //mqttClient.subscribe(topics.childLockControl.commandTopic);
-    mqttHomeAssistantConf?.publishAutoDiscovery(airDeviceStatus);
-    publishDeviceStatus(airDeviceStatus);
-  });
-  mqttClient.on('error', err => {
-    console.error('mqtt error', err);
-  });
-  mqttClient.on('disconnect', () => {
-    console.error('mqtt disconnected');
-  });
+
   mqttClient.on('message', async (topic, message) => {
     try {
       await handleMqttMessage(topic, message, airClient);
@@ -105,11 +78,15 @@ export function getMqttHandler(
   const publish = (topic: string, message: unknown) => {
     const messageIsAString = typeof message === 'string';
 
-    mqttClient.publish(
-      topic,
-      messageIsAString ? message : JSON.stringify(message),
-      { retain: true }
-    );
+    try {
+      mqttClient.publish(
+        topic,
+        messageIsAString ? message : JSON.stringify(message),
+        { retain: true }
+      );
+    } catch (error) {
+      console.error('Error while publishing mqtt message', error);
+    }
   };
 
   const publishDeviceStatus = (status: AirDeviceStatus) => {
@@ -213,6 +190,14 @@ export function getMqttHandler(
   const publishError = () => {
     publish(topics.deviceAvailabilityTopic, 'lost');
   };
+
+  mqttClient.subscribe(topics.modeControl.commandTopic);
+  mqttClient.subscribe(topics.ledControl.commandTopic);
+  mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
+  mqttClient.subscribe(topics.percentage.commandTopic);
+  //mqttClient.subscribe(topics.childLockControl.commandTopic);
+  mqttHomeAssistantConf?.publishAutoDiscovery(airDeviceStatus);
+  publishDeviceStatus(airDeviceStatus);
 
   return {
     handleShutdown,
