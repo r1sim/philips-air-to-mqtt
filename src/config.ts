@@ -39,26 +39,33 @@ const config = {
 const validationSchema = Joi.object({
   mqtt: Joi.object({
     connection: Joi.object({
-      host: Joi.alternatives(
-        Joi.string().hostname(),
-        Joi.string().ip()
-      ).required(),
-      port: Joi.number().port().required(),
-      username: Joi.string().allow('').optional(),
-      password: Joi.string().allow('').optional(),
+      host: Joi.alternatives(Joi.string().hostname(), Joi.string().ip())
+        .required()
+        .label('MQTT_HOST'),
+      port: Joi.number().port().required().label('MQTT_PORT'),
+      username: Joi.string().allow('').optional().label('MQTT_USERNAME'),
+      password: Joi.string().allow('').optional().label('MQTT_PASSWORD'),
     }).required(),
     homeAssistantAutoDiscovery: Joi.object({
-      enabled: Joi.boolean().required(),
-      deleteOnShutdown: Joi.boolean().required(),
+      enabled: Joi.boolean().required().label('MQTT_HA_AD_ENABLED'),
+      deleteOnShutdown: Joi.boolean()
+        .required()
+        .label('MQTT_HA_AD_DELETE_ON_SHUTDOWN'),
     }).required(),
-    topicPrefix: Joi.string().required(),
+    topicPrefix: Joi.string().required().label('MQTT_TOPIC_PREFIX'),
   }).required(),
   airPurifier: Joi.object({
-    deviceName: Joi.string().required(),
-    refreshInterval: Joi.number().required(),
+    deviceName: Joi.string().required().label('PHILIPS_AIR_DEVICE_NAME'),
+    refreshInterval: Joi.number()
+      .min(2)
+      .required()
+      .label('PHILIPS_AIR_REFRESH_INTERVAL'),
     connection: Joi.object({
-      host: Joi.string().required(),
-      protocol: Joi.string().valid('http', 'coap').required(),
+      host: Joi.string().required().label('PHILIPS_AIR_HOST'),
+      protocol: Joi.string()
+        .valid('http', 'coap')
+        .required()
+        .label('PHILIPS_AIR_PROTOCOL'),
     }).required(),
   }).required(),
 });

@@ -105,7 +105,6 @@ async function main() {
       mqttClient.end();
       return;
     }
-    console.log(airDeviceStatus);
     mqttHandler = getMqttHandler(mqttClient, airDeviceStatus, client, {
       onRequestUpdate: async () => {
         await updateDeviceStatus(client);
