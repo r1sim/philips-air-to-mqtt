@@ -45,6 +45,7 @@ async function updateFilterStatus(airClient: AirClient) {
     .then(filters => {
       console.debug('Filters', JSON.stringify(filters));
       airDeviceStatus = { ...airDeviceStatus, ...filters };
+      if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
     });
 }
 
@@ -59,18 +60,17 @@ async function updateDeviceStatus(airClient: AirClient) {
     .then(status => {
       console.debug('Filters', JSON.stringify(status));
       airDeviceStatus = { ...airDeviceStatus, ...status };
+      if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
     });
 }
 
 function setupUpdateIntervals(airClient: AirClient) {
   setInterval(async () => {
     await updateDeviceStatus(airClient);
-    if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
   }, config.airPurifier.refreshInterval * 1000).unref();
 
   setInterval(async () => {
     await updateFilterStatus(airClient);
-    if (airDeviceStatus) mqttHandler?.publishDeviceStatus(airDeviceStatus);
   }, 2 * 3600 * 1000).unref(); // Check for filters every 2 hours
 }
 

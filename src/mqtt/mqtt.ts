@@ -211,7 +211,7 @@ export function getMqttHandler(
   };
 
   const publishError = () => {
-    publish(topics.deviceAvailabilityTopic, 'error');
+    publish(topics.deviceAvailabilityTopic, 'lost');
   };
 
   return {
