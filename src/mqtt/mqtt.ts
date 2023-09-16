@@ -183,11 +183,11 @@ export function getMqttHandler(
     ) {
       mqttHomeAssistantConf?.unpublishAutoDiscovery();
     }
-
+    publishDeviceLost();
     mqttClient.end();
   };
 
-  const publishError = () => {
+  const publishDeviceLost = () => {
     publish(topics.deviceAvailabilityTopic, 'lost');
   };
 
@@ -202,6 +202,6 @@ export function getMqttHandler(
   return {
     handleShutdown,
     publishDeviceStatus,
-    publishError,
+    publishDeviceLost,
   };
 }
