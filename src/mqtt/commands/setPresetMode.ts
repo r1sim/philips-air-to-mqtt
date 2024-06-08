@@ -33,5 +33,7 @@ export async function setPresetMode(newMode: PresetMode, airClient: AirClient) {
   await setPower(true, airClient);
   const mode = mapMode(newMode);
   const om = mapOm(newMode);
-  await airClient.setValues({ om, mode });
+  const aqil = om === 's' ? 0 : 100;
+  const uil = om === 's' ? '0' : '1';
+  await airClient.setValues({ om, mode, aqil, uil });
 }
