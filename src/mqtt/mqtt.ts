@@ -9,38 +9,32 @@ export function getTopics() {
   const topicPrefix = `${config.mqtt.topicPrefix}/${config.airPurifier.deviceName}`;
   return {
     deviceAvailabilityTopic: `${topicPrefix}/$state`,
-    onStatus: {
-      stateTopic: `${topicPrefix}/on`,
-    },
-    percentage: {
-      stateTopic: `${topicPrefix}/percentage`,
-      commandTopic: `${topicPrefix}/percentage/set`,
-    },
-    modeControl: {
-      stateTopic: `${topicPrefix}/mode`,
-      commandTopic: `${topicPrefix}/mode/set`,
+    onStatusStateTopic: `${topicPrefix}/state`,
+    fan: {
+      modeStateTopic: `${topicPrefix}/fan/state`,
+      modeCommandTopic: `${topicPrefix}/fan/state/set`,
+      speedStateTopic: `${topicPrefix}/fan/speed`,
+      speedCommandTopic: `${topicPrefix}/fan/speed/set`,
     },
     ledControl: {
-      stateTopic: `${topicPrefix}/light`,
-      commandTopic: `${topicPrefix}/light/set`,
-      stateTopicBrightness: `${topicPrefix}/brightness`,
-      commandTopicBrightness: `${topicPrefix}/brightness/set`,
+      stateTopic: `${topicPrefix}/light/state`,
+      commandTopic: `${topicPrefix}/light/state/set`,
+      stateTopicBrightness: `${topicPrefix}/light/brightness`,
+      commandTopicBrightness: `${topicPrefix}/light/brightness/set`,
+    },
+    sensors: {
+      pm25StateTopic: `${topicPrefix}/sensors/pm25`,
+      allergenIndexStateTopic: `${topicPrefix}/sensors/allergenIndex`,
     },
     // childLockControl: {
     //   stateTopic: `${topicPrefix}/childLock`,
     //   commandTopic: `${topicPrefix}/childLock/set`,
     // },
-    pm25Sensor: {
-      stateTopic: `${topicPrefix}/pm25`,
-    },
-    allergyIndexSensor: {
-      stateTopic: `${topicPrefix}/allergenIndex`,
-    },
-    filterStatus: {
-      preFilterStateTopic: `${topicPrefix}/preFilter`,
-      carbonFilterStateTopic: `${topicPrefix}/carbonFilter`,
-      hepaFilterStateTopic: `${topicPrefix}/hepaFilter`,
-      wickFilterStateTopic: `${topicPrefix}/wickFilter`,
+    filters: {
+      preFilterRemainingHoursStateTopic: `${topicPrefix}/filters/pre/remainingHours`,
+      carbonFilterRemainingHoursStateTopic: `${topicPrefix}/filters/carbon/remainingHours`,
+      hepaFilterRemainingHoursStateTopic: `${topicPrefix}/filters/hepa/remainingHours`,
+      wickFilterRemainingHoursStateTopic: `${topicPrefix}/filters/wick/remainingHours`,
     },
   };
 }
@@ -118,57 +112,67 @@ export function getMqttHandler(
       publish(topics.ledControl.stateTopicBrightness, status.aqil);
     if (status.aqil)
       publish(topics.ledControl.stateTopic, status.aqil === 0 ? 'OFF' : 'ON');
-    if (status.pm25) publish(topics.pm25Sensor.stateTopic, status.pm25);
-    if (status.iaql) publish(topics.allergyIndexSensor.stateTopic, status.iaql);
+    if (status.pm25) publish(topics.sensors.pm25StateTopic, status.pm25);
+    if (status.iaql)
+      publish(topics.sensors.allergenIndexStateTopic, status.iaql);
 
     // Filter Status
     if (status.wicksts)
-      publish(topics.filterStatus.wickFilterStateTopic, status.wicksts);
+      publish(
+        topics.filters.wickFilterRemainingHoursStateTopic,
+        status.wicksts
+      );
     if (status.fltsts0)
-      publish(topics.filterStatus.preFilterStateTopic, status.fltsts0);
+      publish(topics.filters.preFilterRemainingHoursStateTopic, status.fltsts0);
     if (status.fltsts1)
-      publish(topics.filterStatus.carbonFilterStateTopic, status.fltsts1);
+      publish(
+        topics.filters.carbonFilterRemainingHoursStateTopic,
+        status.fltsts1
+      );
     if (status.fltsts2)
-      publish(topics.filterStatus.hepaFilterStateTopic, status.fltsts2);
+      publish(
+        topics.filters.hepaFilterRemainingHoursStateTopic,
+        status.fltsts2
+      );
 
-    publish(topics.onStatus.stateTopic, status.pwr === '0' ? 'off' : 'on');
+    publish(topics.onStatusStateTopic, status.pwr === '0' ? 'off' : 'on');
 
     switch (mode) {
       case 'off':
-        publish(topics.percentage.stateTopic, 'None');
-        publish(topics.modeControl.stateTopic, 'off');
+        publish(topics.fan.speedStateTopic, 'None');
+        publish(topics.fan.modeStateTopic, 'off');
         break;
       case 'sleep':
-        publish(topics.percentage.stateTopic, 1);
-        publish(topics.modeControl.stateTopic, 'sleep');
+        publish(topics.fan.speedStateTopic, 1);
+        publish(topics.fan.modeStateTopic, 'sleep');
         break;
       case 'low':
-        publish(topics.percentage.stateTopic, 2);
-        publish(topics.modeControl.stateTopic, 'low');
+        publish(topics.fan.speedStateTopic, 2);
+        publish(topics.fan.modeStateTopic, 'low');
         break;
       case 'medium':
-        publish(topics.percentage.stateTopic, 3);
-        publish(topics.modeControl.stateTopic, 'medium');
+        publish(topics.fan.speedStateTopic, 3);
+        publish(topics.fan.modeStateTopic, 'medium');
         break;
       case 'high':
-        publish(topics.percentage.stateTopic, 4);
-        publish(topics.modeControl.stateTopic, 'high');
+        publish(topics.fan.speedStateTopic, 4);
+        publish(topics.fan.modeStateTopic, 'high');
         break;
       case 'max':
-        publish(topics.percentage.stateTopic, 5);
-        publish(topics.modeControl.stateTopic, 'turbo');
+        publish(topics.fan.speedStateTopic, 5);
+        publish(topics.fan.modeStateTopic, 'turbo');
         break;
       case 'auto':
-        publish(topics.percentage.stateTopic, 'None');
-        publish(topics.modeControl.stateTopic, 'auto');
+        publish(topics.fan.speedStateTopic, 'None');
+        publish(topics.fan.modeStateTopic, 'auto');
         break;
       case 'bacteria':
-        publish(topics.percentage.stateTopic, 'None');
-        publish(topics.modeControl.stateTopic, 'bacteria');
+        publish(topics.fan.speedStateTopic, 'None');
+        publish(topics.fan.modeStateTopic, 'bacteria');
         break;
       case 'allergen':
-        publish(topics.percentage.stateTopic, 'None');
-        publish(topics.modeControl.stateTopic, 'allergen');
+        publish(topics.fan.speedStateTopic, 'None');
+        publish(topics.fan.modeStateTopic, 'allergen');
         break;
     }
 
@@ -191,10 +195,10 @@ export function getMqttHandler(
     publish(topics.deviceAvailabilityTopic, 'lost');
   };
 
-  mqttClient.subscribe(topics.modeControl.commandTopic);
+  mqttClient.subscribe(topics.fan.modeCommandTopic);
   mqttClient.subscribe(topics.ledControl.commandTopic);
   mqttClient.subscribe(topics.ledControl.commandTopicBrightness);
-  mqttClient.subscribe(topics.percentage.commandTopic);
+  mqttClient.subscribe(topics.fan.speedCommandTopic);
   //mqttClient.subscribe(topics.childLockControl.commandTopic);
   mqttHomeAssistantConf?.publishAutoDiscovery(airDeviceStatus);
   publishDeviceStatus(airDeviceStatus);

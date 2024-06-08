@@ -56,8 +56,8 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const configFan = {
-    state_topic: topics.onStatus.stateTopic,
-    command_topic: topics.modeControl.commandTopic,
+    state_topic: topics.onStatusStateTopic,
+    command_topic: topics.fan.modeCommandTopic,
     object_id: `${device.name}_fan`,
     unique_id: `${device.name}_fan`,
     payload_on: 'on',
@@ -68,8 +68,8 @@ export function getHomeAssistantAutoDiscoveryHandler(
     device: getAutoDiscoveryDevice(),
     icon: 'mdi:fan',
     name: device.name,
-    percentage_state_topic: topics.percentage.stateTopic,
-    percentage_command_topic: topics.percentage.commandTopic,
+    percentage_state_topic: topics.fan.speedStateTopic,
+    percentage_command_topic: topics.fan.speedCommandTopic,
     preset_modes: [
       'auto',
       'allergen',
@@ -80,15 +80,15 @@ export function getHomeAssistantAutoDiscoveryHandler(
       'high',
       'turbo',
     ],
-    preset_mode_state_topic: topics.modeControl.stateTopic,
-    preset_mode_command_topic: topics.modeControl.commandTopic,
+    preset_mode_state_topic: topics.fan.modeStateTopic,
+    preset_mode_command_topic: topics.fan.modeCommandTopic,
     preset_mode_state_template: '{{ value }}',
     speed_range_min: 1,
     speed_range_max: 5,
   };
 
   const configPayloadPm25Sensor = {
-    state_topic: topics.pm25Sensor.stateTopic,
+    state_topic: topics.sensors.pm25StateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:air-filter',
     name: 'PM2.5',
@@ -102,7 +102,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const configPayloadAllergyIndexSensor = {
-    state_topic: topics.allergyIndexSensor.stateTopic,
+    state_topic: topics.sensors.allergenIndexStateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:flower-pollen-outline',
     name: 'Allergy Index',
@@ -130,7 +130,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   // };
 
   const configPayloadPreFilterRemainingHoursSensor = {
-    state_topic: topics.filterStatus.preFilterStateTopic,
+    state_topic: topics.filters.preFilterRemainingHoursStateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:fan-clock',
     name: 'Remaining Pre-filter Hours',
@@ -144,7 +144,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const configPayloadCarbonFilterRemainingHoursSensor = {
-    state_topic: topics.filterStatus.carbonFilterStateTopic,
+    state_topic: topics.filters.carbonFilterRemainingHoursStateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:fan-clock',
     name: 'Remaining Carbon Filter Hours',
@@ -158,7 +158,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const configPayloadHepaFilterRemainingHoursSensor = {
-    state_topic: topics.filterStatus.hepaFilterStateTopic,
+    state_topic: topics.filters.hepaFilterRemainingHoursStateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:fan-clock',
     name: 'Remaining HEPA Filter Hours',
@@ -172,7 +172,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const configPayloadWickFilterRemainingHoursSensor = {
-    state_topic: topics.filterStatus.wickFilterStateTopic,
+    state_topic: topics.filters.wickFilterRemainingHoursStateTopic,
     state_value_template: '{{ value }}',
     icon: 'mdi:fan-clock',
     name: 'Remaining Wick Filter Hours',

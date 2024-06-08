@@ -15,7 +15,7 @@ export async function handleMqttMessage(
   const message = messageBuffer.toString();
   console.log(`Received message on topic ${topic}: ${message}`);
   switch (topic) {
-    case topics.modeControl.commandTopic: {
+    case topics.fan.modeCommandTopic: {
       await setPresetMode(message as PresetMode, airClient);
       break;
     }
@@ -32,7 +32,7 @@ export async function handleMqttMessage(
       await setBrightness(parseInt(message), airClient);
       break;
     }
-    case topics.percentage.commandTopic: {
+    case topics.fan.speedCommandTopic: {
       const percentage = parseInt(message);
       if (percentage === 5) {
         await setPresetMode('turbo', airClient);
