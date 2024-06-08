@@ -1,8 +1,6 @@
 # Philips Air 2 MQTT
 
-The project aims to control philips air purifiers using MQTT. MQTT is a lightweight messaging protocol widely used in Internet of Things (IoT) applications for its simplicity and efficiency.
-
-I built this to integrate my air purifier into home assistant without using HACS.
+This project is a simple bridge that connects Philips Air Purifiers to MQTT. I use this to integrate my Philips Air Purifier into Home Assistant without having to use HACS.
 
 ## Features
 
@@ -15,9 +13,9 @@ I built this to integrate my air purifier into home assistant without using HACS
 
 **Supported Models**
 
-- AC2889/10
+- AC2889/10 (I only tested this one)
 
-Other models are probably also supported, but the AC2889 is the only model I own. Please submit a PR if you tested this with another model.
+Other models are probably also supported, but the AC2889 is the only model I own. Please [open a ticket](https://github.com/r1sim/philips-air-to-mqtt/issues) or submit a PR if you tested this with another model.
 
 ## Configuration
 
