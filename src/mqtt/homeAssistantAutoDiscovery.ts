@@ -196,34 +196,34 @@ export function getHomeAssistantAutoDiscoveryHandler(
   };
 
   const publishAutoDiscovery = (airDeviceStatus: AirDeviceStatus) => {
-    if (airDeviceStatus.mode) {
+    if (airDeviceStatus.mode !== undefined) {
       publish(configTopicFanControl, configFan);
     }
-    if (airDeviceStatus.aqil)
+    if (airDeviceStatus.aqil !== undefined)
       publish(configTopicLedControl, configPayloadLedControl);
-    if (airDeviceStatus.pm25)
+    if (airDeviceStatus.pm25 !== undefined)
       publish(configTopicPm25Sensor, configPayloadPm25Sensor);
-    if (airDeviceStatus.iaql)
+    if (airDeviceStatus.iaql !== undefined)
       publish(configTopicAllergyIndexSensor, configPayloadAllergyIndexSensor);
     // if (airDeviceStatus.cl)
     //   publish(configTopicChildLockControl, configPayloadChildLock);
 
-    if (airDeviceStatus.fltsts0)
+    if (airDeviceStatus.fltsts0 !== undefined)
       publish(
         configTopicHoursPreFilterSensor,
         configPayloadPreFilterRemainingHoursSensor
       );
-    if (airDeviceStatus.fltsts1)
+    if (airDeviceStatus.fltsts1 !== undefined)
       publish(
         configTopicHoursCarbonFilterSensor,
         configPayloadCarbonFilterRemainingHoursSensor
       );
-    if (airDeviceStatus.fltsts2)
+    if (airDeviceStatus.fltsts2 !== undefined)
       publish(
         configTopicHoursHepaFilterSensor,
         configPayloadHepaFilterRemainingHoursSensor
       );
-    if (airDeviceStatus.wicksts)
+    if (airDeviceStatus.wicksts !== undefined)
       publish(
         configTopicHoursWickFilterHoursSensor,
         configPayloadWickFilterRemainingHoursSensor

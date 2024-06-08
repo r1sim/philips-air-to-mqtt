@@ -108,32 +108,41 @@ export function getMqttHandler(
         : 'off';
 
     const topics = getTopics();
-    if (status.aqil)
+    if (status.aqil !== undefined) {
       publish(topics.ledControl.stateTopicBrightness, status.aqil);
-    if (status.aqil)
+    }
+    if (status.aqil !== undefined) {
       publish(topics.ledControl.stateTopic, status.aqil === 0 ? 'OFF' : 'ON');
-    if (status.pm25) publish(topics.sensors.pm25StateTopic, status.pm25);
-    if (status.iaql)
+    }
+    if (status.pm25 !== undefined) {
+      publish(topics.sensors.pm25StateTopic, status.pm25);
+    }
+    if (status.iaql !== undefined) {
       publish(topics.sensors.allergenIndexStateTopic, status.iaql);
+    }
 
     // Filter Status
-    if (status.wicksts)
+    if (status.wicksts !== undefined) {
       publish(
         topics.filters.wickFilterRemainingHoursStateTopic,
         status.wicksts
       );
-    if (status.fltsts0)
+    }
+    if (status.fltsts0 !== undefined) {
       publish(topics.filters.preFilterRemainingHoursStateTopic, status.fltsts0);
-    if (status.fltsts1)
+    }
+    if (status.fltsts1 !== undefined) {
       publish(
         topics.filters.carbonFilterRemainingHoursStateTopic,
         status.fltsts1
       );
-    if (status.fltsts2)
+    }
+    if (status.fltsts2 !== undefined) {
       publish(
         topics.filters.hepaFilterRemainingHoursStateTopic,
         status.fltsts2
       );
+    }
 
     publish(topics.onStatusStateTopic, status.pwr === '0' ? 'off' : 'on');
 
