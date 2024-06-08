@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.3.2...v1.3.3) (2024-06-08)
+
+
+### Bug Fixes
+
+* fix null assertion for device states ([15bb2cc](https://github.com/r1sim/philips-air-to-mqtt/commit/15bb2ccd52e40adaf21b9725ff2e1c1901cdd1df))
+* publish device lost on shutdown ([8da86e9](https://github.com/r1sim/philips-air-to-mqtt/commit/8da86e972150cf9897df771e2d9f94ae09a2caa2))
+* set led mode in `setPresetMode` ([bf778d2](https://github.com/r1sim/philips-air-to-mqtt/commit/bf778d290476b67aedc1e6fca66cce6eefd818de))
+
 ## [1.3.2](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.3.1...v1.3.2) (2023-09-14)
 
 
