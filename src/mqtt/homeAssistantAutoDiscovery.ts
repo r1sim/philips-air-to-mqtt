@@ -79,6 +79,7 @@ export function getHomeAssistantAutoDiscoveryHandler(
       'medium',
       'high',
       'turbo',
+      'off',
     ],
     preset_mode_state_topic: topics.fan.modeStateTopic,
     preset_mode_command_topic: topics.fan.modeCommandTopic,
