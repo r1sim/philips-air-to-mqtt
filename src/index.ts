@@ -123,6 +123,7 @@ async function main() {
   const shutdown = () => {
     console.info('Shutting down');
     mqttHandler?.handleShutdown();
+    process.exit();
   };
 
   process.on('SIGINT', shutdown);
