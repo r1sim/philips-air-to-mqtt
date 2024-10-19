@@ -76,7 +76,7 @@ docker-compose up
 2. Clone this repository
 3. Copy `.env.example` to `.env` and edit the configuration
 4. Run `npm install`
-5. Run `npm run start`
+5. Run `export $(cat .env | xargs) && npm start`
 
 ## Contributing
 
