@@ -1,3 +1,11 @@
+## [1.3.4](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.3.3...v1.3.4) (2024-10-19)
+
+
+### Bug Fixes
+
+* Add `off` to preset mode definition for home assistant ([e627c0d](https://github.com/r1sim/philips-air-to-mqtt/commit/e627c0d26c7993aea644df26b01dbbbbdfa7b04b))
+* Fix issue on shutdown ([2f07de9](https://github.com/r1sim/philips-air-to-mqtt/commit/2f07de9e8116f3b9064c9ca159fd3fb289aab181))
+
 ## [1.3.3](https://github.com/r1sim/philips-air-to-mqtt/compare/v1.3.2...v1.3.3) (2024-06-08)
 
 
